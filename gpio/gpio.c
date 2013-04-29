@@ -51,6 +51,7 @@ char *usage = "Usage: gpio -v\n"
               "       gpio [-g] <read/write/wb/pwm/clock/mode> ...\n"
               "       gpio [-p] <read/write/wb> ...\n"
 	      "       gpio readall\n"
+	      "       gpio readmode <pin>\n"
 	      "       gpio unexportall/exports ...\n"
 	      "       gpio export/edge/unexport ...\n"
 	      "       gpio drive <group> <value>\n"
@@ -194,7 +195,6 @@ static void doLoad (int argc, char *argv [])
   changeOwner (argv [0], file2) ;
 }
 
-
 /*
  * doReadall:
  *	Read all the GPIO pins
@@ -238,6 +238,24 @@ static void doReadall (void)
   printf ("+----------+------+--------+------+-------+\n") ;
 }
 
+/*
+ * doReadmode:
+ *  Read the mode from a single pin
+ *********************************************************************************
+*/
+static void doReadmode (int argc, char *argv[])
+{
+
+	if (argc != 3)
+	{
+		fprintf (stderr, "Usage: %s <pin>\n", argv [1]) ;
+		exit (1) ;
+	}
+
+	int pin ;
+	pin = atoi (argv [2]) ;
+	printf("%s\n", alts [getAlt (pin)]) ;
+}
 
 /*
  * doExports:
@@ -1004,6 +1022,7 @@ int main (int argc, char *argv [])
 // Check for wiring commands
 
   /**/ if (strcasecmp (argv [1], "readall" ) == 0) doReadall   () ;
+  else if (strcasecmp (argv [1], "readmode" )== 0) doReadmode  (argc, argv) ;
   else if (strcasecmp (argv [1], "read" )    == 0) doRead      (argc, argv) ;
   else if (strcasecmp (argv [1], "write")    == 0) doWrite     (argc, argv) ;
   else if (strcasecmp (argv [1], "wb")       == 0) doWriteByte (argc, argv) ;
